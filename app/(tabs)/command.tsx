@@ -3,16 +3,21 @@ import {
   FlatList,
   StyleSheet,
   Text,
+  TextInput,
   ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { galileoCommands } from "@/constants/data";
 import AppWrapper from "@/components/AppWrapper";
 import * as Clipboard from "expo-clipboard";
+import { runCommand } from "@/config/gemniConfig";
 
 const Command = () => {
+  const [searchCommand, setsearchCommand] = useState<any>();
+  const [result, setresult] = useState<any>();
+
   const copyToClipboard = async (text) => {
     await Clipboard.setStringAsync(text);
     ToastAndroid.show(`${text} copied`, ToastAndroid.SHORT);
@@ -40,10 +45,29 @@ const Command = () => {
       </View>
     );
   };
+  const handleSearchCommand = async () => {
+    if (searchCommand) {
+      const data = await runCommand(searchCommand);
+      console.log(data?.response?.text());
+      setresult(data?.response.text());
+    }
+  };
 
   return (
     <AppWrapper>
       <View className="mx-4">
+        <View className="flex flex-row items-center border-2 border-gray-400 p-2 rounded-lg">
+          <TextInput
+            className="flex-1"
+            placeholder="search command"
+            value={searchCommand}
+            onChangeText={(text) => setsearchCommand(text)}
+          />
+          <TouchableOpacity className="" onPress={handleSearchCommand}>
+            <Text>GO</Text>
+          </TouchableOpacity>
+        </View>
+        <Text>{result}</Text>
         <FlatList
           showsVerticalScrollIndicator={false}
           data={galileoCommands}
