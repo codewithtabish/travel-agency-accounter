@@ -10,6 +10,15 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
 import Stacks from "./Stacks";
 
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "tomato",
+    secondary: "yellow",
+  },
+};
+
 const AppWrapper = ({ children }: any) => {
   const colorSchem = useColorScheme();
   return (
@@ -22,7 +31,7 @@ const AppWrapper = ({ children }: any) => {
               : "bg-light-bg-primary"
           }`}
         >
-          {children}
+          <PaperProvider theme={theme}>{children}</PaperProvider>
         </View>
         <StatusBar
           barStyle={colorSchem == "dark" ? "light-content" : "dark-content"}
