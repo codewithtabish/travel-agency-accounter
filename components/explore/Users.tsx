@@ -8,9 +8,11 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { users } from "@/constants/data";
+import { useRouter } from "expo-router";
 
-const Users = ({ inputData }: any) => {
+const Users = ({ inputData, isBottomSheetVisible, userType }: any) => {
   const [allUsers, setusers] = useState<any>(users);
+  const router = useRouter();
 
   useEffect(() => {
     if (inputData) {
@@ -22,11 +24,25 @@ const Users = ({ inputData }: any) => {
     } else {
       setusers(users);
     }
-  }, [inputData]);
+    if (userType !== "All") {
+      setusers(users.filter((user: any) => user.userType === userType));
+    }
+    if (userType == null) {
+      setusers(users);
+    }
+  }, [inputData, userType]);
 
   const UserItem = ({ item }: any) => {
     return (
-      <TouchableOpacity className="mx-4 my-2">
+      <TouchableOpacity
+        className="mx-4 my-2"
+        onPress={() =>
+          router.push({
+            pathname: "/singleUser",
+            params: { item },
+          })
+        }
+      >
         <View className="flex flex-row  items-center gap-4 ">
           <View>
             <Image src={item?.image} className="w-12 h-12" />

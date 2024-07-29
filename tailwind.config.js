@@ -15,7 +15,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        primary:"#007bff",
         light: {
+
           // Background colors
           'bg-primary': '#ffffff', // White
           'bg-secondary': '#f8f9fa', // Light Gray

@@ -6,18 +6,39 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import AppWrapper from "@/components/AppWrapper";
 import { AntDesign, Entypo, Ionicons } from "@expo/vector-icons";
 import Users from "@/components/explore/Users";
+import BottomSheetExplorer from "@/components/explore/BottomSheetExplorer";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 const explore = () => {
   const { width, height } = Dimensions.get("window");
   const [inputData, setinputData] = useState<any>();
+  const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const [userType, setuserType] = useState<any>();
+
   const ref = useRef<any>();
   useEffect(() => {
-    ref.current.focus();
+    // ref.current.focus();
   }, []);
+
+  const handlePresentModalPress = useCallback(() => {
+    if (!isBottomSheetVisible) {
+      setIsBottomSheetVisible(true);
+    }
+
+    if (isBottomSheetVisible) {
+      bottomSheetModalRef.current?.present();
+    }
+  }, [isBottomSheetVisible]);
+
+  const handleUserType = (type: any) => {
+    setuserType(type);
+    bottomSheetModalRef.current?.close();
+  };
 
   return (
     <AppWrapper>
@@ -45,10 +66,25 @@ const explore = () => {
               />
             </TouchableOpacity>
           </View>
-          <Ionicons name="filter" size={24} color="black" />
+          <TouchableOpacity onPress={handlePresentModalPress}>
+            <Ionicons name="filter" size={24} color="black" />
+          </TouchableOpacity>
         </View>
       </View>
-      <Users inputData={inputData} />
+      <Users
+        userType={userType}
+        inputData={inputData}
+        isBottomSheetVisible={isBottomSheetVisible}
+      />
+      <BottomSheetExplorer
+        isBottomSheetVisible={isBottomSheetVisible}
+        setIsBottomSheetVisible={setIsBottomSheetVisible}
+        handlePresentModalPress={handlePresentModalPress}
+        bottomSheetModalRef={bottomSheetModalRef}
+        handleUserType={handleUserType}
+        userType={userType}
+        setuserType={setuserType}
+      />
     </AppWrapper>
   );
 };
